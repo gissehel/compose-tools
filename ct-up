@@ -3,6 +3,8 @@
 basedir=$(dirname "$(readlink -f "$0")")
 . "${basedir}/include.sh"
 
+run_pre_phase "up"
+
 compose up -d $(get_daemon)
 
 run_post_phase "up"

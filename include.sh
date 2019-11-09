@@ -51,18 +51,30 @@ compose() {
     popd >/dev/null
 }
 
-run_post_phase() {
-    phase_name="$1"
+
+run_phase() {
+    phase_category="$1"
+    phase_name="$2"
     pushd . >/dev/null
     cd "${running_dir}"
-    if [ "$(echo */post/"${phase_name}"/*)" != "*/post/${phase_name}/*" ]
+    if [ "$(echo */${phase_category}/"${phase_name}"/*)" != "*/${phase_category}/${phase_name}/*" ]
     then
-        for scriptname in */post/"${phase_name}"/*
+        for scriptname in */${phase_category}/"${phase_name}"/*
         do
             bash "${scriptname}"
         done
     fi
     popd >/dev/null
+}
+
+run_pre_phase() {
+    phase_name="$1"
+    run_phase "pre" "${phase_name}"
+}
+
+run_post_phase() {
+    phase_name="$1"
+    run_phase "post" "${phase_name}"
 }
 
 install() {
@@ -77,6 +89,9 @@ install() {
 }
 
 mkdir -p "${running_dir}"
+
+run_pre_phase "env"
+
 recreate_env
 CONFIG_FILES=""
 
