@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+basedir=$(dirname "$(readlink -f "$0")")
+. "${basedir}/include.sh"
+
+if [ "$1" != "" ]
+then
+    compose run --rm "$@"
+else
+    echo Possible choices : $(get_interactive)
+fi
+
+run_post_phase "interactive"

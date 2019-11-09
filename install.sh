@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+basedir=$(dirname "$(readlink -f "$0")")
+. "${basedir}/include.sh"
+
+install
+

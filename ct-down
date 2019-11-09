@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+basedir=$(dirname "$(readlink -f "$0")")
+. "${basedir}/include.sh"
+
+compose down
+
+run_post_phase "down"
