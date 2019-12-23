@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+basedir=$(dirname "$(readlink -f "$0")")
+. "${basedir}/include.sh"
+
+
+path="$1"
+[ -z "${path}" ] && path="."
+
+name="$2"
+[ -z "${name}" ] && name=$(basename "$(readlink -f "${path}")")
+
+
+echo "Init a compose-tools repo in path [${path}] using name [${name}] (Y/n) ?"
+read answer
+
+if [ "${answer}" == "y" ] || [ "${answer}" == "Y" ] || [ -z "${answer}" ]
+then
+    run_pre_phase "init"
+    mkdir -p "${path}/yaml.d"
+    mkdir -p "${path}/env.d"
+    readme="${path}/README.md"
+    if [ ! -d "${readme}" ]
+    then
+        echo "This repository contains configuration for [compose-tools]." > "${readme}"
+        echo "" >> "${readme}"
+        echo "To use it in [compose-tools], just link this folder in ~/.config/compose-tools/${name} (or replace ${name} by any name you want this repo to refer)." >> "${readme}"
+        echo "" >> "${readme}"
+        echo "Example:" >> "${readme}"
+        echo "" >> "${readme}"
+        echo '```'"sh" >> "${readme}"
+        echo "ln -s /path/to/repo ~/.config/compose-tools/${name}" >> "${readme}"
+        echo '```' >> "${readme}"
+        echo "" >> "${readme}"
+        echo "And compose files from this repo will be usable by [compose-tools]." >> "${readme}"
+        echo "" >> "${readme}"
+        echo "[compose-tools]: https://github.com/gissehel/compose-tools" >> "${readme}"
+    fi
+    git init .
+    [ -e ~/".config/compose-tools/${name}" ] || ln -s "$(readlink -f ${path})" ~/".config/compose-tools/${name}"
+    run_post_phase "init"
+else
+    echo "Aborting..."
+fi
