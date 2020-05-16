@@ -3,5 +3,5 @@
 basedir=$(dirname "$(readlink -f "$0")")
 . "${basedir}/include.sh"
 
-install
+install "$@"
 

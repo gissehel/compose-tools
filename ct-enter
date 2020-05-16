@@ -3,4 +3,4 @@
 basedir=$(dirname "$(readlink -f "$0")")
 . "${basedir}/include.sh"
 
-enter "$1"
+enter "$@"

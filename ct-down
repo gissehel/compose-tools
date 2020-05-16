@@ -3,8 +3,4 @@
 basedir=$(dirname "$(readlink -f "$0")")
 . "${basedir}/include.sh"
 
-run_pre_phase "down"
-
-compose down
-
-run_post_phase "down"
+down "$@"
