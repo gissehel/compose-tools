@@ -49,6 +49,27 @@ get_interactive() {
     popd >/dev/null
 }
 
+get_enter() {
+    pushd . >/dev/null
+    cd "${running_dir}"
+    if [ "$(echo ${yaml_dir_pattern})" != "${yaml_dir_pattern}" ]
+    then
+        grep -oh "^#:enter:.*" ${yaml_dir_pattern} | sed -e 's/.*:enter://'
+    fi
+    popd >/dev/null
+}
+
+enter() {
+    container="$1"
+    comm=$(get_enter | grep "^${container}:" | sed -e 's/.*://')
+    if [ -n "${comm}" ]
+    then
+        docker exec -ti "${container}" ${comm}
+    else
+        echo "No enter command for container [${container}]"
+    fi
+}
+
 compose() {
     pushd . >/dev/null
     cd "${running_dir}"
