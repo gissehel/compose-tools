@@ -65,11 +65,24 @@ get_enter() {
 enter() {
     container="$1"
     comm=$(get_enter | grep "^${container}:" | sed -e 's/.*://')
+    if [ -z "${comm}" ]
+    then
+        echo "No enter command for container [${container}]"
+        echo "Force using [s]h/[b]ash/[i]gnore (s/b/[i]) ?"
+        read answer
+        if [ "${answer}" == "s" ]
+        then
+            comm="/bin/sh"
+        elif [ "${answer}" == "b" ]
+        then
+            comm="/bin/bash"
+        else
+            echo "Aborted..."
+        fi
+    fi
     if [ -n "${comm}" ]
     then
-        docker exec -ti "${container}" ${comm}
-    else
-        echo "No enter command for container [${container}]"
+        docker exec -e "TERM=${TERM}" -e "COLUMNS=${COLUMNS}" -e "LINES=${LINES}" -ti "${container}" ${comm}
     fi
 }
 
