@@ -44,30 +44,21 @@ get_include() {
 get_daemon() {
     pushd . >/dev/null
     cd "${running_dir}"
-    if [ "$(echo ${yaml_dir_pattern})" != "${yaml_dir_pattern}" ]
-    then
-        grep -oh "^#:daemon:.*" ${yaml_dir_pattern} | sed -e 's/.*://'
-    fi
+    cat $(get_include) | grep -oh "^#:daemon:.*" | sed -e 's/.*://'
     popd >/dev/null
 }
 
 get_interactive() {
     pushd . >/dev/null
     cd "${running_dir}"
-    if [ "$(echo ${yaml_dir_pattern})" != "${yaml_dir_pattern}" ]
-    then
-        grep -oh "^#:interactive:.*" ${yaml_dir_pattern} | sed -e 's/.*://'
-    fi
+    cat $(get_include) | grep -oh "^#:interactive:.*"} | sed -e 's/.*://'
     popd >/dev/null
 }
 
 get_enter() {
     pushd . >/dev/null
     cd "${running_dir}"
-    if [ "$(echo ${yaml_dir_pattern})" != "${yaml_dir_pattern}" ]
-    then
-        grep -oh "^#:enter:.*" ${yaml_dir_pattern} | sed -e 's/.*:enter://'
-    fi
+    cat $(get_include) | grep -oh "^#:enter:.*" | sed -e 's/.*:enter://'
     popd >/dev/null
 }
 
