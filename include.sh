@@ -89,7 +89,7 @@ enter() {
 base-compose() {
     pushd . >/dev/null
     cd "${running_dir}"
-    docker-compose -p docker ${CONFIG_FILES} "$@"
+    docker compose --env-file "${running_dir}/.env" -p docker ${CONFIG_FILES} "$@"
     popd >/dev/null
 }
 
@@ -209,7 +209,14 @@ init() {
             echo "" >> "${readme}"
             echo "[${tool_name}]: https://github.com/gissehel/compose-tools" >> "${readme}"
         fi
-        git init .
+        pushd "${path}"
+        if ( git remote -v >/dev/null 2>&1 )
+        then
+            echo "[${path}] is already in a git repository. None created."
+        else 
+            git init . 
+        fi
+        popd
         [ -e "${running_dir}/${name}" ] || ln -s "$(readlink -f ${path})" "${running_dir}/${name}"
         run_post_phase "init"
     else
