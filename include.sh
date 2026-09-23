@@ -51,7 +51,7 @@ get_daemon() {
 get_interactive() {
     pushd . >/dev/null
     cd "${running_dir}"
-    cat $(get_include) | grep -oh "^#:interactive:.*"} | sed -e 's/.*://'
+    cat $(get_include) | grep -oh "^#:interactive:.*" | sed -e 's/.*://'
     popd >/dev/null
 }
 
@@ -62,9 +62,19 @@ get_enter() {
     popd >/dev/null
 }
 
+get_enter-user() {
+    pushd . >/dev/null
+    cd "${running_dir}"
+    cat $(get_include) | grep -oh "^#:enter-user:.*" | sed -e 's/.*:enter-user://'
+    popd >/dev/null
+}
+
 enter() {
     container="$1"
     comm=$(get_enter | grep "^${container}:" | sed -e 's/.*://')
+    user=$(get_enter-user | grep "^${container}:" | sed -e 's/.*://')
+    userparams=""
+    [ -n "${user}" ] && userparams="-u ${user}"
     if [ -z "${comm}" ]
     then
         echo "No enter command for container [${container}]"
@@ -82,7 +92,7 @@ enter() {
     fi
     if [ -n "${comm}" ]
     then
-        docker exec -e "TERM=${TERM}" -e "COLUMNS=${COLUMNS}" -e "LINES=${LINES}" -ti "${container}" ${comm}
+        docker exec -e "TERM=${TERM}" -e "COLUMNS=${COLUMNS}" -e "LINES=${LINES}" ${userparams} -ti "${container}" ${comm}
     fi
 }
 
